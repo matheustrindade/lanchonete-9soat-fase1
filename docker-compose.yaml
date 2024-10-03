@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  mysql:
+    image: 'mysql'
+  backend:
+    build:
+      context: ./backend
+      dockerfile: backend.dockerfile
+    ports:
+      - '80:80'
+    volumes: 
+      - /app/node_modules
+    depends_on:
+      - mysql
