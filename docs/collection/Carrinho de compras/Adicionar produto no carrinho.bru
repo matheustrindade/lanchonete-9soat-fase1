@@ -1,0 +1,20 @@
+meta {
+  name: Adicionar produto no carrinho
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{API_BASE_URL}}/shopping-cart/items
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "productId": "1fe16abe-6bdb-44b7-9adf-cc8715cbb8bb",
+    "quantity": 1,
+    "observation": "Com Limão e Gelo",
+    "customerId": "0192ab57-ed54-762a-be5c-4da7ce1cc440"
+  }
+}
