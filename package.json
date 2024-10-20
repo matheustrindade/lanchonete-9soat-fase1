@@ -4,18 +4,25 @@
   "description": "sistema para gerenciamento de pedidos de lanchonete",
   "main": "server.js",
   "scripts": {
-    "start:dev": "ts-node-dev --inspect --transpile-only --ignore-watch node_modules src/server.ts",
+    "start": "npx ts-node-dev --inspect --transpile-only -r tsconfig-paths/register --ignore-watch node_modules src/server.ts",
     "build": "tsc"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "amqplib": "^0.10.4",
     "body-parser": "^1.20.3",
-    "express": "^4.21.0"
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "mongodb": "^6.9.0"
   },
   "devDependencies": {
+    "@types/amqplib": "^0.10.5",
+    "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/mongodb": "^4.0.6",
     "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.6.2"
   }
 }
