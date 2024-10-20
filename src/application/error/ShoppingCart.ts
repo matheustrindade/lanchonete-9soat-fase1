@@ -1,0 +1,1 @@
+export const EmptyShoppingCartError = new Error('Your shopping cart is empty')

@@ -1,4 +1,7 @@
+import { CreatePixPaymentOutput } from "@/application/gateway/Payment";
 import { Product } from "./Product";
+import { PaymentTransaction } from "./Payment";
+import { Order } from "./Order";
 
 type ShoppingCartItem = {
   productId: string;
@@ -36,6 +39,10 @@ export class ShoppingCart {
       observation,
     });
     this.totalPrice += product.getPrice() * quantity;
+  }
+
+  checkout(payment: PaymentTransaction) {
+    return Order.create(this.customerId, this.items, this.totalPrice, payment)
   }
 
   getTotalPrice(): number {

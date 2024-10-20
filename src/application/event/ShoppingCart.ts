@@ -8,6 +8,6 @@ export function NewProductAddedToShoppingCartEvent(product: Product, shoppingCar
   return {
     name: PRODUCT_ADDED_TO_SHOPPING_CART,
     productId: product.id,
-    shoppingCartId: shoppingCart.id
+    customerId: shoppingCart.customerId
   }
 }
