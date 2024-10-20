@@ -12,11 +12,15 @@
   "tags": [
     {
       "name": "healthy",
-      "description": "Applicaion health check"
+      "description": "Application health check"
     },
     {
       "name": "Products",
       "description": "Operations for products"
+    },
+    {
+      "name": "Shopping Cart",
+      "description": "Operations for Shopping Cart"
     }
   ],
   "paths": {
@@ -48,7 +52,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateProductResponse"
+                "$ref": "#/components/schemas/CreateProductRequest"
               }
             }
           }
@@ -199,6 +203,39 @@
           }
         }
       }
+    },
+    "/shopping-cart/items": {
+      "post": {
+        "tags": [
+          "Shopping Cart"
+        ],
+        "summary": "Add product to shopping cart",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddProductToShoppingCartRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Product added successfully"
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -207,6 +244,38 @@
         "type": "string",
         "enum": ["Bebida", "Acompanhamento", "Lanche", "Sobremesa"],
         "title": "Product Category"
+      },
+      "AddProductToShoppingCartRequest": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "example": "0192ab57-ed54-762a-be5c-4da7ce1cc440",
+            "description": "Id do produto"
+          },
+          "observation": {
+            "type": "string",
+            "example": "Sem gelo",
+            "description": "Observação"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 2,
+            "description": "Quantidade",
+            "minimum": 1
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Id do cliente",
+            "example": "0192ab57-ed54-762a-be5c-4da7ce1cc440"
+          }
+        },
+        "required": [
+          "productId",
+          "customerId",
+          "quantity"
+        ],
+        "description": "Requisição para adicionar produto no carrinho de compras"
       },
       "CreateProductRequest": {
         "type": "object",
@@ -293,7 +362,6 @@
         },
         "description": "Requisição para alterar um novo produto"
       },
-
       "UpdateProductResponse": {
         "type": "object",
         "properties": {
