@@ -2,7 +2,7 @@ import { CreateProduct, DeleteProduct, UpdateProduct } from "./application/useca
 import HealthCheckController from "./infra/controller/healthcheck-controller";
 import ProductsController from "./infra/controller/products-controller";
 import MysqlAdapter from "./infra/database/mysql-adapter";
-import Registry from "./infra/di/register";
+import Registry from "./infra/di/registry";
 import ExpressAdapter from "./infra/http/express-adapter";
 import ProductRepositoryDatabase from "./infra/repository/product-repository-database";
 

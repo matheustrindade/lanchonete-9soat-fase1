@@ -1,6 +1,6 @@
 import ProductRepository, { CreateProductInput, DeleteProductInput, UpdateProductInput } from "../../application/repository/product-repository";
 import DatabaseConnection from "../database/database-connection";
-import { inject } from "../di/register";
+import { inject } from "../di/registry";
 
 export default class ProductRepositoryDatabase implements ProductRepository {
     @inject("database")

@@ -1,5 +1,8 @@
 import HttpServer from "./http-server";
 import express from 'express';
+import swaggerUi from "swagger-ui-express";
+import * as fs from 'fs';
+import * as path from 'path';
 
 export default class ExpressAdapter implements HttpServer {
     app: any;
@@ -7,6 +10,11 @@ export default class ExpressAdapter implements HttpServer {
     constructor() {
         this.app = express();
         this.app.use(express.json());
+        const filePath = path.join(__dirname, '..', 'swagger.json');
+        if (fs.existsSync(filePath)) {
+            const data = fs.readFileSync(filePath, 'utf8');
+            this.app.use("/docs", swaggerUi.serve, swaggerUi.setup(JSON.parse(data)));
+        }
     }
     register(method: string, url: string, callback: Function): void {
         this.app[method](url, async(req: any, res: any)=>{

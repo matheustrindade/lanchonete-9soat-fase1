@@ -1,0 +1,112 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "FastFood Api",
+    "description": "Api de gerenciamento de FastFood proposto no Tech Challenge da Pós-Graduação de Arquitetura de Software da FIAP",
+    "contact": {
+      "name": "Bruno Leoanrdo Fagundes",
+      "email": "brunoleomg2301@gmail.com"
+    },
+    "version": "2.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Api de teste"
+    }
+  ],
+  "paths": {
+    "/product": {
+      "post": {
+        "summary": "Cria produto",
+        "description": "Cria um novo produto",
+        "tags": ["Product"],
+        "requestBody": {
+          "content": {}
+        },
+        "responses": {
+          "200": {
+            "description": "Produto criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Product"
+                  }
+                },
+                "examples": {
+                  "product": {
+                    "value": {
+                      "description": "Milkshake de chocolate"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Atualiza o produto",
+        "description": "Atualiza um produto pelo id",
+        "tags": ["Product"],
+        "requestBody": {
+          "content": {}
+        },
+        "responses": {
+          "200": {
+            "description": "Produto criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Product"
+                  }
+                },
+                "examples": {
+                  "product": {
+                    "value": {
+                      "description": "Milkshake de chocolate"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove o produto",
+        "description": "Remove um produto pelo id",
+        "tags": ["Product"],
+        "requestBody": {
+          "content": {}
+        },
+        "responses": {
+          "200": {
+            "description": "Produto criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Product"
+                  }
+                },
+                "examples": {
+                  "product": {
+                    "value": {
+                      "description": "Milkshake de chocolate"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

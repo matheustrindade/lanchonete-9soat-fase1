@@ -1,5 +1,5 @@
 import { CreateProduct, DeleteProduct, UpdateProduct } from "../../application/usecases/products";
-import { inject } from "../di/register";
+import { inject } from "../di/registry";
 import HttpServer from "../http/http-server";
 
 export default class ProductsController {
@@ -18,13 +18,13 @@ export default class ProductsController {
             await this.createProduct?.execute({ description, price, category })
             return { message: "Produto adicionado com sucesso" };
         });
-        this.httpServer?.register("patch","/product", async (params: any, body: any) => {
+        this.httpServer?.register("patch","/product/:id", async (params: any, body: any) => {
             const { id } = params;
             const { description, price, category } = body;
             await this.updateProduct?.execute({ id, description, price, category })
             return { message: "Produto alterado com sucesso" };
         });
-        this.httpServer?.register("delete","/product", async (params: any, body: any) => {
+        this.httpServer?.register("delete","/product/:id", async (params: any, body: any) => {
             const { id } = params;
             await this.deleteProduct?.execute({ id })
             return { message: "Produto removido com sucesso" };

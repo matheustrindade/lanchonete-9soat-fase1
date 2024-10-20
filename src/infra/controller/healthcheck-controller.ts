@@ -1,4 +1,4 @@
-import { inject } from "../di/register";
+import { inject } from "../di/registry";
 import HttpServer from "../http/http-server";
 
 export default class HealthCheckController {

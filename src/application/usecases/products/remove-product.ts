@@ -1,4 +1,4 @@
-import { inject } from "../../../infra/di/register";
+import { inject } from "../../../infra/di/registry";
 import ProductRepository from "../../repository/product-repository";
 import UseCase from "../usecase";
 

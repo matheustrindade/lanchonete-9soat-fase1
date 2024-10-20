@@ -1,4 +1,5 @@
-import { inject } from "../../../infra/di/register";
+
+import { inject } from "../../../infra/di/registry";
 import ProductRepository from "../../repository/product-repository";
 import UseCase from "../usecase";
 
@@ -9,9 +10,9 @@ export default class CreateProduct implements UseCase{
     async execute(input: Input): Promise<void> {
         const { description, price, category } = input;
         await this.repository?.create({
-        description,
-        price,
-        category,
+            description,
+            price,
+            category,
         });
     }
 }
