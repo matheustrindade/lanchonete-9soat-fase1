@@ -24,4 +24,8 @@ export class ProductMongoRepository implements ProductRepository {
   async create(product: Product): Promise<void> {
     await this.collection.insertOne(product);
   }
+
+  async delete(product: Product): Promise<void> {
+    this.collection.deleteOne({ id: product.id })
+  }
 }
