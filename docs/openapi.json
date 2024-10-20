@@ -12,7 +12,11 @@
   "tags": [
     {
       "name": "healthy",
-      "description": "rota para verificação de estado da aplicação"
+      "description": "Applicaion health check"
+    },
+    {
+      "name": "Products",
+      "description": "Operations for products"
     }
   ],
   "paths": {
@@ -72,13 +76,54 @@
           }
         }
       }
+    },
+    "/products/{id}": {
+      "patch": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Update product",
+        "requestBody": {
+          "description": "Product data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductResponse"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product Updated succesfully ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateProductResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
       "ProductCategory": {
         "type": "string",
-        "enum": ["BEBIDA", "ACOMPANHAMENTO", "LANCHE", "SOBREMESA"],
+        "enum": ["Bebida", "Acompanhamento", "Lanche", "Sobremesa"],
         "title": "Categoria do produto"
       },
       "CreateProductRequest": {
@@ -144,6 +189,61 @@
           }
         },
         "description": "Resposta retornada ao criar um novo produto. Contém o identificador único do produto."
+      },
+      "UpdateProductRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Produto X",
+            "description": "Nome do produto a ser criado."
+          },
+          "description": {
+            "type": "string",
+            "example": "Detalhes do produto X",
+            "description": "Descrição detalhada do produto, incluindo características e benefícios."
+          },
+          "price": {
+            "type": "number",
+            "format": "float",
+            "example": 99.99,
+            "description": "Preço do produto. Deve ser um valor numérico positivo.",
+            "minimum": 0.01
+          }
+        },
+        "description": "Requisição para alterar um novo produto"
+      },
+      "UpdateProductResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "019160ee-7929-72d3-99cf-6c7f33789ba8",
+            "description": "Identificador único do produto criado."
+          },
+          "name": {
+            "type": "string",
+            "example": "Produto X",
+            "description": "Nome do produto."
+          },
+          "description": {
+            "type": "string",
+            "example": "Detalhes do produto X",
+            "description": "Descrição do produto."
+          },
+          "price": {
+            "type": "number",
+            "format": "float",
+            "example": 99.99,
+            "description": "Preço do produto.",
+            "minimum": 0.01
+          },
+          "category": {
+            "type": "string",
+            "$ref": "#/components/schemas/ProductCategory"
+          }
+        },
+        "description": "Resposta retornada ao alterar um novo produto."
       },
       "InternalServerErrorResponse": {
         "type": "object",

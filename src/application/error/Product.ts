@@ -1,0 +1,1 @@
+export const ProductNotFoundError = new Error('Product not found')

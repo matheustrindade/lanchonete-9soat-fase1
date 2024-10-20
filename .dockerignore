@@ -1,3 +1,5 @@
 node_modules
-backend.dockerfile
 .git
+.docs
+README.md
+docker-compose.yaml
