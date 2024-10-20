@@ -1,18 +1,20 @@
 import { EventPublisher } from "@/application/event/EventPublisher"
-import { NewProductCreatedEvent } from "@/application/event/Product"
+import { NewProductUpdatedEvent } from "@/application/event/Product"
 import { ProductRepository } from "@/application/repository/Product"
-import { Product } from "@/domain/entity/Product"
+import { ProductNotFoundError } from "@/application/error/Product"
 
-export class CreateProductUseCase {
+export class UpdateProductUseCase {
   constructor(
     private productRepository: ProductRepository,
     private eventPublisher: EventPublisher
   ) {}
 
   async execute(input: Input): Promise<Output> {
-      const product = Product.create(input.name, input.description, input.price, input.category)
-      await this.productRepository.create(product)
-      await this.eventPublisher.publish(NewProductCreatedEvent(product))
+      const product = await this.productRepository.findById(input.productId)
+      if (!product) throw ProductNotFoundError
+      product.update(input.name, input.description, input.price)
+      await this.productRepository.update(product)
+      await this.eventPublisher.publish(NewProductUpdatedEvent(product))
       return {
         id: product.id,
         name: product.getName(),
@@ -24,10 +26,10 @@ export class CreateProductUseCase {
 }
 
 export type Input = {
+  productId: string
   name: string
   description: string
   price: number
-  category: string
 }
 
 export type Output = {

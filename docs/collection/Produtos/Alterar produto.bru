@@ -1,0 +1,23 @@
+meta {
+  name: Alterar produto
+  type: http
+  seq: 2
+}
+
+patch {
+  url: {{API_BASE_URL}}/products/:id
+  body: json
+  auth: none
+}
+
+params:path {
+  id: e95a29a5-f510-4242-b848-bd69b958318d
+}
+
+body:json {
+  {
+    "name": "Coca Colas",
+    "description": "Coca Cola 2 Litros",
+    "price": 9.90
+  }
+}

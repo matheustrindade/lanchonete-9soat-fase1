@@ -1,12 +1,15 @@
 import express from "express";
 import cors from "cors";
+import { getStatusCodeFromError } from "./ErrorHandler";
 
 type PostCallback = (request: { body: any }) => Promise<unknown>
+type PatchCallback = (request: { body: any, params: any }) => Promise<unknown>
 type GetCallback = (request: { params: any }) => Promise<unknown>
 
 export default interface HttpServer {
 	get(url: string, callback: GetCallback): void;
 	post(url: string, callback: PostCallback): void;
+	patch(url: string, callback: PatchCallback): void;
 	listen (port: number): void;
 }
 
@@ -24,7 +27,8 @@ export class ExpressHttpServer implements HttpServer {
 				const output = await callback({ params: req.params });
 				res.json(output);
 			} catch (e: any) {
-				res.status(422).json({ message: e.message });
+				const status = getStatusCodeFromError(e)
+				res.status(status).json({ message: e.message });
 			}
 		});
 	}
@@ -35,7 +39,20 @@ export class ExpressHttpServer implements HttpServer {
 				const output = await callback({ body: req.body });
 				res.json(output);
 			} catch (e: any) {
-				res.status(422).json({ message: e.message });
+				const status = getStatusCodeFromError(e)
+				res.status(status).json({ message: e.message });
+			}
+		});
+	}
+
+	patch(url: string, callback: PatchCallback): void {
+		this.app.patch(url, async function (req: any, res: any) {
+			try {
+				const output = await callback({ body: req.body, params: req.params });
+				res.json(output);
+			} catch (e: any) {
+				const status = getStatusCodeFromError(e)
+				res.status(status).json({ message: e.message });
 			}
 		});
 	}
