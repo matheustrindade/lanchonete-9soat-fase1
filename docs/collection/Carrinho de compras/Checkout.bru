@@ -1,0 +1,17 @@
+meta {
+  name: Checkout
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{API_BASE_URL}}/shopping-cart/checkout
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "customerId": "0192ab57-ed54-762a-be5c-4da7ce1cc440"
+  }
+}
