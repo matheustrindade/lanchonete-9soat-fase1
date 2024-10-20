@@ -1,0 +1,15 @@
+meta {
+  name: Listar produtos
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{API_BASE_URL}}/products?category=Bebida
+  body: none
+  auth: none
+}
+
+params:query {
+  category: Bebida
+}
