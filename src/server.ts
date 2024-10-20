@@ -1,11 +1,10 @@
 import { MongoClient } from 'mongodb'
 import amqp from "amqplib";
-import { ProductController } from './infra/controller/Product';
-import { ExpressHttpServer } from './infra/http/HttpServer';
-import { CreateProductUseCase } from './application/usecase/CreateProduct';
-import { ProductMongoRepository } from './infra/repository/ProductRepository';
-import { RabbitMqAdapter } from './infra/event/RabbitMqAdapter';
-import { UpdateProductUseCase } from './application/usecase/UpdateProduct';
+
+import { ExpressHttpServer } from '@/infra/http/HttpServer';
+import { ProductController } from '@/infra/controller/Product';
+import { RabbitMqAdapter } from '@/infra/event/RabbitMqAdapter';
+import { ProductMongoRepository } from '@/infra/repository/ProductRepository';
 
 async function start() {
   const [mongoClient, rabbitMqConnection] = await Promise.all([
@@ -16,12 +15,9 @@ async function start() {
 
   const productRepository = new ProductMongoRepository(productCollection)
   const eventPublisher = new RabbitMqAdapter(rabbitMqConnection)
-
-  const createProductUseCase = new CreateProductUseCase(productRepository, eventPublisher)
-  const updateProductUseCase = new UpdateProductUseCase(productRepository, eventPublisher)
   
   const httpServer = new ExpressHttpServer()
-  ProductController.registerRoutes(httpServer, createProductUseCase, updateProductUseCase)
+  ProductController.registerRoutes(httpServer, productRepository, eventPublisher)
 
   httpServer.get('/healthy', async () =>  ({ ok: true }))
   httpServer.listen(3000)

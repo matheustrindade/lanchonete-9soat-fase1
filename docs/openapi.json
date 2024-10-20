@@ -83,6 +83,17 @@
           "Products"
         ],
         "summary": "Update product",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Product Id"
+          }
+        ],
         "requestBody": {
           "description": "Product data",
           "required": true,
@@ -116,6 +127,38 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Delete product",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Product Id"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Product deleted succesfully"
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponse"
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -124,7 +167,7 @@
       "ProductCategory": {
         "type": "string",
         "enum": ["Bebida", "Acompanhamento", "Lanche", "Sobremesa"],
-        "title": "Categoria do produto"
+        "title": "Product Category"
       },
       "CreateProductRequest": {
         "type": "object",
