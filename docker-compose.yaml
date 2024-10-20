@@ -1,14 +1,15 @@
-version: "3.8"
 services:
-  mysql:
-    image: 'mysql'
-  backend:
-    build:
-      context: ./backend
-      dockerfile: backend.dockerfile
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.13-management
+    restart: unless-stopped
     ports:
-      - '80:80'
-    volumes: 
-      - /app/node_modules
-    depends_on:
-      - mysql
+      - "5672:5672"
+      - "15672:15672"
+
+  mongo:
+    container_name: mongo
+    image: mongo:7.0.3
+    restart: always
+    ports:
+      - "27017:27017"

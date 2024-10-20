@@ -1,23 +1,28 @@
-import express from 'express'
-import { Router, Request, Response, NextFunction } from 'express';
+import { MongoClient } from 'mongodb'
+import amqp from "amqplib";
+import { ProductController } from './infra/controller/Product';
+import { ExpressHttpServer } from './infra/http/HttpServer';
+import { CreateProductUseCase } from './application/usecase/CreateProduct';
+import { ProductMongoRepository } from './infra/repository/ProductRepository';
+import { RabbitMqAdapter } from './infra/event/RabbitMqAdapter';
 
-const app = express();
-const route = Router()
+async function start() {
+  const [mongoClient, rabbitMqConnection] = await Promise.all([
+    MongoClient.connect('mongodb://localhost:27017/lanchonete'),
+    amqp.connect("amqp://localhost")
+  ])
+  const productCollection = mongoClient.db().collection('products')
 
-app.use((_: Request, res: Response, next: NextFunction) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  next();
-});
+  const productRepository = new ProductMongoRepository(productCollection)
+  const eventPublisher = new RabbitMqAdapter(rabbitMqConnection)
 
-app.use(express.json())
+  const createProductUseCase = new CreateProductUseCase(productRepository, eventPublisher)
+  
+  const httpServer = new ExpressHttpServer()
+  ProductController.registerRoutes(httpServer, createProductUseCase)
 
-route.get('/healthy', (_: Request, res: Response) => {
-  res.status(200).json({message: "App is up and running!"})
-})
+  httpServer.get('/healthy', async () =>  ({ ok: true }))
+  httpServer.listen(3000)
+}
 
-app.use(route)
-
-
-app.listen(80, () => 'server running on port 80')
+start()
