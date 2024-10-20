@@ -4,6 +4,20 @@ import { Collection } from "mongodb";
 
 export class ProductMongoRepository implements ProductRepository {
   constructor(private readonly collection: Collection) {}
+  
+  async listByCategory(category: string): Promise<Product[]> {
+    const cursor = await this.collection.find({ category: { $eq: category }})
+    const products = await cursor.toArray()
+    return products.map((product: any) => {
+      return Product.restore(
+        product.id,
+        product.name,
+        product.description,
+        product.price,
+        product.category
+      );
+    })
+  }
 
   async update(product: Product): Promise<void> {
     await this.collection.updateOne({ id: product.id }, { $set: product });

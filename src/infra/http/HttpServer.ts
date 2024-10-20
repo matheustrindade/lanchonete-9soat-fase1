@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import { getStatusCodeFromError } from "./ErrorHandler";
 
@@ -24,9 +24,9 @@ export class ExpressHttpServer implements HttpServer {
 		this.app.use(cors());
 	}
 	get(url: string, callback: GetCallback): void {
-		this.app.get(url, async function (req: any, res: any) {
+		this.app.get(url, async function (req: Request, res: Response) {
 			try {
-				const output = await callback({ params: req.params });
+				const output = await callback({ params: { ...req.params, ...req.query } });
 				res.json(output);
 			} catch (e: any) {
 				const status = getStatusCodeFromError(e)
@@ -36,7 +36,7 @@ export class ExpressHttpServer implements HttpServer {
 	}
 
 	post(url: string, callback: PostCallback): void {
-		this.app.post(url, async function (req: any, res: any) {
+		this.app.post(url, async function (req: Request, res: Response) {
 			try {
 				const output = await callback({ body: req.body });
 				res.json(output);
@@ -48,7 +48,7 @@ export class ExpressHttpServer implements HttpServer {
 	}
 
 	patch(url: string, callback: PatchCallback): void {
-		this.app.patch(url, async function (req: any, res: any) {
+		this.app.patch(url, async function (req: Request, res: Response) {
 			try {
 				const output = await callback({ body: req.body, params: req.params });
 				res.json(output);
@@ -60,7 +60,7 @@ export class ExpressHttpServer implements HttpServer {
 	}
 
 	delete(url: string, callback: DeleteCallback): void {
-		this.app.patch(url, async function (req: any, res: any) {
+		this.app.patch(url, async function (req: Request, res: Response) {
 			try {
 				const output = await callback({ params: req.params });
 				res.json(output);
