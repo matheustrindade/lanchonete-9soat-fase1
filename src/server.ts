@@ -1,3 +1,5 @@
+import 'dotenv/config'
+
 import { MongoClient } from "mongodb";
 import amqp from "amqplib";
 import MercadoPagoConfig, { Payment } from "mercadopago";
@@ -10,6 +12,7 @@ import { ShoppingCartController } from "@/infra/controller/ShoppingCart";
 import { ShoppingCartMongoRepository } from "@/infra/repository/ShoppingCartRepository";
 import { OrderMongoRepository } from "@/infra/repository/OrderRepository";
 import { MercadoPagoPaymentGateway } from "@/infra/gateway/MercadoPago";
+import { ShoppingCartQuery } from "@/infra/projection/ShoppingCart";
 
 async function start() {
   const config = {
@@ -41,13 +44,16 @@ async function start() {
     productRepository,
     eventPublisher
   );
+
+  const shoppingCartQuery = new ShoppingCartQuery(shoppingCartCollection)
   ShoppingCartController.registerRoutes(
     httpServer,
     productRepository,
     shoppingCartRepository,
     eventPublisher,
     paymentGateway,
-    orderRepository
+    orderRepository,
+    shoppingCartQuery
   );
 
   httpServer.get("/healthy", async () => ({ ok: true }));

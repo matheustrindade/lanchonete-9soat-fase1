@@ -6,15 +6,17 @@ import { AddProductToShoppingCartUseCase } from "@/application/usecase/AddProduc
 import { CheckoutShoppingCartUseCase } from "@/application/usecase/CheckoutShoppingCart";
 import { PaymentGateway } from "@/application/gateway/Payment";
 import { OrderRepository } from "@/application/repository/Order";
+import { ShoppingCartQuery } from "../projection/ShoppingCart";
 
 export class ShoppingCartController {
   static registerRoutes(
-    httpServer: HttpServer,
-    productRepository: ProductRepository,
-    shoppingCartRepository: ShoppingCartRepository,
-    eventPublisher: EventPublisher,
-    paymentGateway: PaymentGateway,
-    orderRepository: OrderRepository
+    httpServer: HttpServer, 
+    productRepository: ProductRepository, 
+    shoppingCartRepository: ShoppingCartRepository, 
+    eventPublisher: EventPublisher, 
+    paymentGateway: PaymentGateway, 
+    orderRepository: OrderRepository, 
+    shoppingCartQuery: ShoppingCartQuery
   ) {
     const addProductToShoppingCartUseCase = new AddProductToShoppingCartUseCase(
       productRepository,
@@ -41,6 +43,10 @@ export class ShoppingCartController {
       return checkoutShoppingCartUseCase.execute({
         customerId: request.body.customerId,
       });
+    });
+
+    httpServer.get("/shopping-cart", (request) => {
+      return shoppingCartQuery.findByCustomerId(request.params.customerId);
     });
   }
 }
