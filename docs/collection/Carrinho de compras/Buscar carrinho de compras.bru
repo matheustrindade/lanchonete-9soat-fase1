@@ -1,0 +1,15 @@
+meta {
+  name: Buscar carrinho de compras
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{API_BASE_URL}}/shopping-cart?customerId=0192ab57-ed54-762a-be5c-4da7ce1cc440
+  body: none
+  auth: none
+}
+
+params:query {
+  customerId: 0192ab57-ed54-762a-be5c-4da7ce1cc440
+}

@@ -12,11 +12,15 @@
   "tags": [
     {
       "name": "healthy",
-      "description": "Applicaion health check"
+      "description": "Application health check"
     },
     {
       "name": "Products",
       "description": "Operations for products"
+    },
+    {
+      "name": "Shopping Cart",
+      "description": "Operations for Shopping Cart"
     }
   ],
   "paths": {
@@ -48,7 +52,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateProductResponse"
+                "$ref": "#/components/schemas/CreateProductRequest"
               }
             }
           }
@@ -199,6 +203,81 @@
           }
         }
       }
+    },
+    "/shopping-cart/items": {
+      "post": {
+        "tags": [
+          "Shopping Cart"
+        ],
+        "summary": "Add product to shopping cart",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddProductToShoppingCartRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Product added successfully"
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shopping-cart": {
+      "get": {
+        "tags": [
+          "Shopping Cart"
+        ],
+        "summary": "Get shopping cart details by customer ID",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "0192ab57-ed54-762a-be5c-4da7ce1cc440"
+            },
+            "description": "Customer ID to retrieve the shopping cart"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Shopping cart retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetShoppingCartResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -207,6 +286,38 @@
         "type": "string",
         "enum": ["Bebida", "Acompanhamento", "Lanche", "Sobremesa"],
         "title": "Product Category"
+      },
+      "AddProductToShoppingCartRequest": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "example": "0192ab57-ed54-762a-be5c-4da7ce1cc440",
+            "description": "Id do produto"
+          },
+          "observation": {
+            "type": "string",
+            "example": "Sem gelo",
+            "description": "Observação"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 2,
+            "description": "Quantidade",
+            "minimum": 1
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Id do cliente",
+            "example": "0192ab57-ed54-762a-be5c-4da7ce1cc440"
+          }
+        },
+        "required": [
+          "productId",
+          "customerId",
+          "quantity"
+        ],
+        "description": "Requisição para adicionar produto no carrinho de compras"
       },
       "CreateProductRequest": {
         "type": "object",
@@ -293,7 +404,6 @@
         },
         "description": "Requisição para alterar um novo produto"
       },
-
       "UpdateProductResponse": {
         "type": "object",
         "properties": {
@@ -356,6 +466,66 @@
           }
         },
         "description": "Resposta retornada ao alterar um novo produto."
+      },
+      "GetShoppingCartResponse": {
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "example": "0192ab57-ed54-762a-be5c-4da7ce1cc440",
+            "description": "ID of the customer"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "type": "string",
+                  "example": "1fe16abe-6bdb-44b7-9adf-cc8715cbb8bb",
+                  "description": "ID of the product"
+                },
+                "productName": {
+                  "type": "string",
+                  "example": "Produto Exemplo",
+                  "description": "Name of the product"
+                },
+                "productPrice": {
+                  "type": "number",
+                  "example": 9.9,
+                  "description": "Price of the product"
+                },
+                "productDescription": {
+                  "type": "string",
+                  "example": "Descrição do Produto Exemplo",
+                  "description": "Description of the product"
+                },
+                "observation": {
+                  "type": "string",
+                  "example": "Com Limão e Gelo",
+                  "description": "Observation for the product"
+                },
+                "productCategory": {
+                  "type": "string",
+                  "example": "Bebida",
+                  "description": "Category of the product"
+                },
+                "quantity": {
+                  "type": "number",
+                  "example": 1,
+                  "description": "Quantity of the product"
+                },
+                "totalPrice": {
+                  "type": "number",
+                  "example": 9.9,
+                  "description": "Total price of the shopping cart"
+                }
+              }
+            },
+            "description": "List of items in the shopping cart"
+          }
+        },
+        "description": "Response schema for retrieving the shopping cart details"
       },
       "InternalServerErrorResponse": {
         "type": "object",
