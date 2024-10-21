@@ -1,4 +1,3 @@
-import { CreatePixPaymentOutput } from "@/application/gateway/Payment";
 import { Product } from "./Product";
 import { PaymentTransaction } from "./Payment";
 import { Order } from "./Order";

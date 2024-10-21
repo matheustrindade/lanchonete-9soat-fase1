@@ -18,7 +18,8 @@ async function start() {
   const config = {
     mongoURL: String(process.env.MONGO_URL),
     rabbitMqURL: String(process.env.RABBITMQ_URL),
-    mercadoPagoToken: String(process.env.MERCADO_PAGO_TOKEN)
+    mercadoPagoToken: String(process.env.MERCADO_PAGO_TOKEN),
+    callbackUrl: String(process.env.CALLBACK_URL)
   }
 
   const [mongoClient, rabbitMqConnection] = await Promise.all([
@@ -36,7 +37,7 @@ async function start() {
 
   const client = new MercadoPagoConfig({ accessToken: config.mercadoPagoToken });
   const payment = new Payment(client);
-  const paymentGateway = new MercadoPagoPaymentGateway(payment);
+  const paymentGateway = new MercadoPagoPaymentGateway(payment, config.callbackUrl);
 
   const httpServer = new ExpressHttpServer();
   ProductController.registerRoutes(
