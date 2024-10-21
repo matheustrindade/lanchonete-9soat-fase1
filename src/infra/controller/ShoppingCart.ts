@@ -5,7 +5,7 @@ import { ShoppingCartRepository } from "@/application/repository/ShoppingCart";
 import { AddProductToShoppingCartUseCase } from "@/application/usecase/AddProductToShoppingCart";
 import { CheckoutShoppingCartUseCase } from "@/application/usecase/CheckoutShoppingCart";
 import { PaymentGateway } from "@/application/gateway/Payment";
-import { OrderRepository } from "@/application/repository/Order";
+import { PreOrderRepository } from "@/application/repository/PreOrder";
 import { ShoppingCartQuery } from "../projection/ShoppingCart";
 
 export class ShoppingCartController {
@@ -15,7 +15,7 @@ export class ShoppingCartController {
     shoppingCartRepository: ShoppingCartRepository, 
     eventPublisher: EventPublisher, 
     paymentGateway: PaymentGateway, 
-    orderRepository: OrderRepository, 
+    preOrderRepository: PreOrderRepository, 
     shoppingCartQuery: ShoppingCartQuery
   ) {
     const addProductToShoppingCartUseCase = new AddProductToShoppingCartUseCase(
@@ -26,7 +26,7 @@ export class ShoppingCartController {
     const checkoutShoppingCartUseCase = new CheckoutShoppingCartUseCase(
       shoppingCartRepository,
       paymentGateway,
-      orderRepository,
+      preOrderRepository,
       eventPublisher
     )
 

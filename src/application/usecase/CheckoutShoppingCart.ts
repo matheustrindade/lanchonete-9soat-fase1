@@ -1,15 +1,16 @@
 import { PaymentGateway } from "@/application/gateway/Payment";
-import { OrderRepository } from "@/application/repository/Order";
+import { PreOrderRepository } from "@/application/repository/PreOrder";
 import { EmptyShoppingCartError } from "@/application/error/ShoppingCart";
 import { ShoppingCartRepository } from "@/application/repository/ShoppingCart";
 import { EventPublisher } from "@/application/event/EventPublisher";
-import { NewOrderCreatedEvent } from "@/application/event/Order";
+import { NewPreOrderCreatedEvent } from "@/application/event/PreOrder";
+import { Id } from "@/domain/value-objects/Id";
 
 export class CheckoutShoppingCartUseCase {
   constructor(
     private readonly shoppingCartRepository: ShoppingCartRepository,
     private readonly paymentGateway: PaymentGateway,
-    private readonly orderRepository: OrderRepository,
+    private readonly preOrderRepository: PreOrderRepository,
     private readonly eventPublisher: EventPublisher
   ) {}
 
@@ -17,20 +18,22 @@ export class CheckoutShoppingCartUseCase {
     const shoppingCart = await this.shoppingCartRepository.findByCustomerId(input.customerId)
     if (!shoppingCart) throw EmptyShoppingCartError
     const payment = await this.paymentGateway.createPixPayment({
+      id: Id.createString(),
       amount: shoppingCart.getTotalPrice(),
       customer: {
         name: 'Guilherme Silveira', // TODO: Adicionar nome do usuario
         email: '4c283848-7505-49e6-9eb3-d285b8fd9a23@emailhook.site', // TODO: Adicionar email do usuario
       }
     })
-    const order = shoppingCart.checkout(payment)
-    await this.orderRepository.create(order)
-    await this.eventPublisher.publish(NewOrderCreatedEvent(order))
+    const preOrder = shoppingCart.checkout(payment)
+    await this.preOrderRepository.create(preOrder)
+    await this.shoppingCartRepository.delete(shoppingCart)
+    await this.eventPublisher.publish(NewPreOrderCreatedEvent(preOrder))
     return {
-      orderId: order.id,
+      preOrderId: preOrder.id,
       payment: {
-        qrCode: order.payment.qrCode,
-        qrCodeLink: order.payment.qrCodeLink,
+        qrCode: preOrder.payment.qrCode,
+        qrCodeLink: preOrder.payment.qrCodeLink,
       }
     }
   }
@@ -41,7 +44,7 @@ export type Input = {
 }
 
 export type Output = {
-  orderId: string
+  preOrderId: string
   payment: {
     qrCodeLink: string
     qrCode: string

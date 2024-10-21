@@ -7,10 +7,20 @@ import { PaymentCreateData } from "mercadopago/dist/clients/payment/create/types
 const TEN_MINUTES = 600_000
 
 export class MercadoPagoPaymentGateway implements PaymentGateway {
-  constructor(readonly payment: Payment){}
+  constructor(readonly payment: Payment, readonly callbackUrl: string){}
+
+  async findById(id: string): Promise<PaymentTransaction> {
+    const paymentResponse = await this.payment.get({ id })
+    return {
+      id: String(paymentResponse.id!!),
+      internalId: paymentResponse.metadata.internal_id,
+      qrCode: paymentResponse.point_of_interaction?.transaction_data?.qr_code!!,
+      qrCodeLink: paymentResponse.point_of_interaction?.transaction_data?.ticket_url!!,
+      status: parsePaymentStatus(paymentResponse)
+    }
+  }
 
   async createPixPayment(input: CreatePixPaymentInput): Promise<PaymentTransaction> {
-    console.log('Starting create pix payment at Mercado Pago', input)
     const dateOfExpiration = new Date()
     dateOfExpiration.setUTCMilliseconds(dateOfExpiration.getUTCMilliseconds() + TEN_MINUTES)
 
@@ -23,12 +33,17 @@ export class MercadoPagoPaymentGateway implements PaymentGateway {
         payer: {
           email: input.customer.email,
           first_name: input.customer.name
-        }
+        },
+        metadata: {
+          internal_id: input.id
+        },
+        notification_url: `${this.callbackUrl}/${input.id}`
       }
     }
     const paymentResponse = await this.payment.create(paymentData)
     return {
       id: String(paymentResponse.id!!),
+      internalId: input.id,
       qrCode: paymentResponse.point_of_interaction?.transaction_data?.qr_code!!,
       qrCodeLink: paymentResponse.point_of_interaction?.transaction_data?.ticket_url!!,
       status: parsePaymentStatus(paymentResponse)

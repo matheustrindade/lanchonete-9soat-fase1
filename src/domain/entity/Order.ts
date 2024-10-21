@@ -9,10 +9,9 @@ type OrderItem = {
 };
 
 enum OrderStatus {
-  AWAITING_PAYMENT,
-  PREPARING,
-  READY,
-  FINISHED
+  PREPARING = 'PREPARING',
+  READY = 'READY',
+  FINISHED = 'FINISHED'
 }
 
 export class Order {
@@ -29,6 +28,6 @@ export class Order {
   static create(customerId: string, items: OrderItem[], totalPrice: number, payment: PaymentTransaction) {
     const id = Id.createString()
     const createdAt = new Date()
-    return new Order(id, customerId, items, totalPrice, payment, OrderStatus.AWAITING_PAYMENT, createdAt)
+    return new Order(id, customerId, items, totalPrice, payment, OrderStatus.PREPARING, createdAt)
   }
 }

@@ -10,9 +10,12 @@ import { RabbitMqAdapter } from "@/infra/event/RabbitMqAdapter";
 import { ProductMongoRepository } from "@/infra/repository/ProductRepository";
 import { ShoppingCartController } from "@/infra/controller/ShoppingCart";
 import { ShoppingCartMongoRepository } from "@/infra/repository/ShoppingCartRepository";
-import { OrderMongoRepository } from "@/infra/repository/OrderRepository";
+import { PreOrderMongoRepository } from "@/infra/repository/PreOrderRepository";
 import { MercadoPagoPaymentGateway } from "@/infra/gateway/MercadoPago";
 import { ShoppingCartQuery } from "@/infra/projection/ShoppingCart";
+import { CallbackController } from '@/infra/controller/Callback';
+import { CallbackConsumer } from '@/infra/queue/Callback';
+import { OrderMongoRepository } from '@/infra/repository/OrderRepository';
 
 async function start() {
   const config = {
@@ -28,12 +31,14 @@ async function start() {
   ]);
   const productCollection = mongoClient.db().collection("products");
   const shoppingCartCollection = mongoClient.db().collection("shopping_carts");
+  const preOrderCollection = mongoClient.db().collection("pre_orders");
   const orderCollection = mongoClient.db().collection("orders");
 
   const productRepository = new ProductMongoRepository(productCollection);
   const shoppingCartRepository = new ShoppingCartMongoRepository(shoppingCartCollection);
   const orderRepository = new OrderMongoRepository(orderCollection);
-  const eventPublisher = new RabbitMqAdapter(rabbitMqConnection);
+  const preOrderRepository = new PreOrderMongoRepository(preOrderCollection);
+  const rabbitMqAdapter = new RabbitMqAdapter(rabbitMqConnection);
 
   const client = new MercadoPagoConfig({ accessToken: config.mercadoPagoToken });
   const payment = new Payment(client);
@@ -43,7 +48,7 @@ async function start() {
   ProductController.registerRoutes(
     httpServer,
     productRepository,
-    eventPublisher
+    rabbitMqAdapter
   );
 
   const shoppingCartQuery = new ShoppingCartQuery(shoppingCartCollection)
@@ -51,11 +56,19 @@ async function start() {
     httpServer,
     productRepository,
     shoppingCartRepository,
-    eventPublisher,
+    rabbitMqAdapter,
     paymentGateway,
-    orderRepository,
+    preOrderRepository,
     shoppingCartQuery
   );
+  CallbackController.registerRoutes(httpServer, rabbitMqAdapter)
+  await CallbackConsumer.registerConsumers(
+    rabbitMqAdapter,
+    preOrderRepository,
+    paymentGateway,
+    orderRepository,
+    rabbitMqAdapter
+  )
 
   httpServer.get("/healthy", async () => ({ ok: true }));
   httpServer.listen(3000);
