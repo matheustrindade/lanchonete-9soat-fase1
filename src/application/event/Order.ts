@@ -1,5 +1,5 @@
-import { Event } from "./EventPublisher"
 import { Order } from "@/domain/entity/Order"
+import { Event } from "./EventPublisher"
 
 export const ORDER_CREATED = "ORDER_CREATED"
 

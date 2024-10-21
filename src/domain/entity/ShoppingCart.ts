@@ -1,6 +1,6 @@
 import { Product } from "./Product";
 import { PaymentTransaction } from "./Payment";
-import { Order } from "./Order";
+import { PreOrder } from "./PreOrder";
 
 type ShoppingCartItem = {
   productId: string;
@@ -40,8 +40,8 @@ export class ShoppingCart {
     this.totalPrice += product.getPrice() * quantity;
   }
 
-  checkout(payment: PaymentTransaction) {
-    return Order.create(this.customerId, this.items, this.totalPrice, payment)
+  checkout(payment: PaymentTransaction): PreOrder {
+    return PreOrder.create(this.customerId, this.items, this.totalPrice, payment)
   }
 
   getTotalPrice(): number {
