@@ -23,6 +23,8 @@ import {
 } from '@/infra/repository';
 import { OrderController } from './infra/controller/Order';
 import { OrderQuery } from './infra/projection/Order';
+import { CustomerController } from './infra/controller/Customer';
+import { CustomerMongoRepository } from './infra/repository/CustomerRepository';
 
 async function start() {
   const config = {
@@ -41,12 +43,14 @@ async function start() {
   const shoppingCartCollection = mongoDatabase.collection("shopping_carts");
   const preOrderCollection = mongoDatabase.collection("pre_orders");
   const orderCollection = mongoDatabase.collection("orders");
+  const customerCollection = mongoClient.db().collection("customers");
 
   const productRepository = new ProductMongoRepository(productCollection);
   const shoppingCartRepository = new ShoppingCartMongoRepository(shoppingCartCollection);
   const orderRepository = new OrderMongoRepository(orderCollection);
   const preOrderRepository = new PreOrderMongoRepository(preOrderCollection);
   const rabbitMqAdapter = new RabbitMqAdapter(rabbitMqConnection);
+  const customerRepository = new CustomerMongoRepository(customerCollection)
 
   const client = new MercadoPagoConfig({ accessToken: config.mercadoPagoToken });
   const payment = new Payment(client);
@@ -80,6 +84,8 @@ async function start() {
     rabbitMqAdapter
   )
   await ShoppingCartConsumer.registerConsumers(rabbitMqAdapter, shoppingCartRepository)
+
+  CustomerController.registerRoutes(httpServer,customerRepository, rabbitMqAdapter);  
 
   httpServer.get("/healthy", async () => ({ status: 200, ok: true }));
   httpServer.listen(3000);

@@ -25,6 +25,10 @@
     {
       "name": "Orders",
       "description": "Operations for Orders"
+    },
+    {
+      "name": "Customers",
+      "description": "Operations for customers"
     }
   ],
   "paths": {
@@ -375,6 +379,88 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/GetOrderResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers": {
+      "post": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Cria um cliente",
+        "requestBody": {
+          "description": "Customer data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cliente criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateCustomerResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{personalCode}": {
+      "get": {
+        "tags":  [
+          "Customers"
+        ],
+        "summary": "Busca cliente por CPF",
+        "parameters": [
+          {
+            "name": "personalCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "CPF do cliente"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Cliente encontrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCustomerByPersonalCodeResponse"
                 }
               }
             }
@@ -743,6 +829,82 @@
           }
         },
         "description": "Resposta de erro genérica para falhas inesperadas no servidor. Inclui uma mensagem de erro."
+      },
+      "CreateCustomerRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "John Wayne",
+            "description": "Nome do cliente a ser criado."
+          },
+          "personalCode": {
+            "type": "string",
+            "example": "44455566677",
+            "description": "CPF do cliente a ser criado."
+          },
+          "email": {
+            "type": "string",
+            "example": "john.wayne@test.com",
+            "description": "Email do cliente a ser criado."
+          }
+        },
+        "required": [
+          "name", "personalCode"
+        ],
+        "description": "Requisição para criar um novo cliente."
+      },
+      "CreateCustomerResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "7500f766-f676-4918-a693-b3432b7e7c26",
+            "description": "Identificador único do cliente criado."
+          },
+          "name": {
+            "type": "string",
+            "example": "John Wayne",
+            "description": "Nome do cliente criado."
+          },
+          "personalCode": {
+            "type": "string",
+            "example": "44455566677",
+            "description": "CPF do cliente criado."
+          },
+          "email": {
+            "type": "string",
+            "example": "john.wayne@test.com",
+            "description": "Email do client criado."
+          }
+        },
+        "description": "Resposta retornada ao criar um novo cliente. Contém o identificador único do cliente."
+      },
+      "GetCustomerByPersonalCodeResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "7500f766-f676-4918-a693-b3432b7e7c26",
+            "description": "Identificador único do cliente."
+          },
+          "name": {
+            "type": "string",
+            "example": "John Wayne",
+            "description": "Nome do cliente."
+          },
+          "personalCode": {
+            "type": "string",
+            "example": "44455566677",
+            "description": "CPF do cliente."
+          },
+          "email": {
+            "type": "string",
+            "example": "john.wayne@test.com",
+            "description": "Email do cliente."
+          }
+        },
+        "description": "Resposta retornada ao buscar um cliente por CPF."
       }
     }
   }
