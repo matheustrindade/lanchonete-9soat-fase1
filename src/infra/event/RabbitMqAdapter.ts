@@ -1,5 +1,6 @@
-import { Event, EventPublisher } from "@/application/event/EventPublisher";
 import { Connection } from "amqplib";
+
+import { Event, EventPublisher } from "@/application/event";
 import { EventConsumer } from "./Consumer";
 
 const exchange = "amq.direct";
@@ -17,14 +18,16 @@ export class RabbitMqAdapter implements EventPublisher, EventConsumer {
       },
     ];
     this.connection.createChannel().then(async (channel) => {
-      await queues.map(async (queue) => {
-        await channel.assertQueue(queue.name);
-        return channel.bindQueue(
-          queue.name,
-          exchange,
-          queue.binding.routingKey
-        );
-      });
+      await Promise.all(
+        queues.map(async (queue) => {
+          await channel.assertQueue(queue.name);
+          return channel.bindQueue(
+            queue.name,
+            exchange,
+            queue.binding.routingKey
+          );
+        })
+      );
       return channel.close();
     });
   }

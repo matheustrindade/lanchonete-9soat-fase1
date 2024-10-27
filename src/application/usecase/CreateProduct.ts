@@ -1,7 +1,6 @@
-import { EventPublisher } from "@/application/event/EventPublisher"
-import { NewProductCreatedEvent } from "@/application/event/Product"
-import { ProductRepository } from "@/application/repository/Product"
-import { Product } from "@/domain/entity/Product"
+import { Product } from "@/domain/entity"
+import { ProductRepository } from "@/application/repository"
+import { EventPublisher, NewProductCreatedEvent } from "@/application/event"
 
 export class CreateProductUseCase {
   constructor(
@@ -23,14 +22,14 @@ export class CreateProductUseCase {
   }
 }
 
-export type Input = {
+type Input = {
   name: string
   description: string
   price: number
   category: string
 }
 
-export type Output = {
+type Output = {
   id: string
   name: string
   description: string

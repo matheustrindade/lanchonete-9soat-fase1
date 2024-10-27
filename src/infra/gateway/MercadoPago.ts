@@ -1,8 +1,9 @@
-import { CreatePixPaymentInput,  PaymentGateway} from "@/application/gateway/Payment";
-import { PaymentStatus, PaymentTransaction } from "@/domain/entity/Payment";
 import { Payment } from "mercadopago";
 import { PaymentResponse } from "mercadopago/dist/clients/payment/commonTypes";
 import { PaymentCreateData } from "mercadopago/dist/clients/payment/create/types";
+
+import { CreatePixPaymentInput,  PaymentGateway} from "@/application/gateway";
+import { PaymentStatus, PaymentTransaction } from "@/domain/entity";
 
 const TEN_MINUTES = 600_000
 

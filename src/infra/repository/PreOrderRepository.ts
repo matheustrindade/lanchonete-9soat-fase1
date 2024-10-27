@@ -1,6 +1,7 @@
-import { PreOrderRepository } from "@/application/repository/PreOrder";
-import { PreOrder } from "@/domain/entity/PreOrder";
 import { Collection } from "mongodb";
+
+import { PreOrder } from "@/domain/entity";
+import { PreOrderRepository } from "@/application/repository";
 
 export class PreOrderMongoRepository implements PreOrderRepository {
   constructor(private readonly collection: Collection) {}

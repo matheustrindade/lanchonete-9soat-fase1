@@ -1,7 +1,6 @@
-import { EventPublisher } from "@/application/event/EventPublisher"
-import { NewProductUpdatedEvent } from "@/application/event/Product"
-import { ProductRepository } from "@/application/repository/Product"
-import { ProductNotFoundError } from "@/application/error/Product"
+import { ProductRepository } from "@/application/repository"
+import { ProductNotFoundError } from "@/application/error"
+import { EventPublisher, NewProductUpdatedEvent } from "@/application/event"
 
 export class UpdateProductUseCase {
   constructor(
@@ -25,14 +24,14 @@ export class UpdateProductUseCase {
   }
 }
 
-export type Input = {
+type Input = {
   productId: string
   name: string
   description: string
   price: number
 }
 
-export type Output = {
+type Output = {
   id: string
   name: string
   description: string

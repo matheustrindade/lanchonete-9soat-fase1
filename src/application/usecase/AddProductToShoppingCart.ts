@@ -1,34 +1,32 @@
-import { ProductNotFoundError } from "@/application/error/Product"
-import { ProductRepository } from "@/application/repository/Product"
-import { ShoppingCartRepository } from "@/application/repository/ShoppingCart"
-import { EventPublisher } from "@/application/event/EventPublisher"
-import { ShoppingCart } from "@/domain/entity/ShoppingCart"
-import { NewProductAddedToShoppingCartEvent } from "../event/ShoppingCart"
+import { ProductNotFoundError } from "@/application/error";
+import { EventPublisher, NewProductAddedToShoppingCartEvent } from "@/application/event";
+import { ProductRepository, ShoppingCartRepository } from "@/application/repository";
+import { ShoppingCart } from "@/domain/entity";
 
 export class AddProductToShoppingCartUseCase {
 
   constructor(
     private readonly productRepository: ProductRepository,
     private readonly shoppingCartRepository: ShoppingCartRepository,
-    private readonly eventPublisher: EventPublisher
+    private readonly eventPublisher: EventPublisher,
   ) {}
 
-  async execute(input: Input): Promise<void> {
-    let shoppingCart = await this.shoppingCartRepository.findByCustomerId(input.customerId)
+  public async execute(input: Input): Promise<void> {
+    let shoppingCart = await this.shoppingCartRepository.findByCustomerId(input.customerId);
     if (!shoppingCart) {
-      shoppingCart = ShoppingCart.create(input.customerId)
+      shoppingCart = ShoppingCart.create(input.customerId);
     }
-    const product = await this.productRepository.findById(input.productId)
-    if (!product) throw ProductNotFoundError
-    shoppingCart.addProduct(product, input.quantity, input.observation)
-    await this.shoppingCartRepository.save(shoppingCart)
-    await this.eventPublisher.publish(NewProductAddedToShoppingCartEvent(product, shoppingCart))
+    const product = await this.productRepository.findById(input.productId);
+    if (!product) { throw ProductNotFoundError; }
+    shoppingCart.addProduct(product, input.quantity, input.observation);
+    await this.shoppingCartRepository.save(shoppingCart);
+    await this.eventPublisher.publish(NewProductAddedToShoppingCartEvent(product, shoppingCart));
   }
 }
 
-export type Input = {
-  customerId: string
-  productId: string
-  quantity: number
-  observation: string
+interface Input {
+  customerId: string;
+  productId: string;
+  quantity: number;
+  observation: string;
 }

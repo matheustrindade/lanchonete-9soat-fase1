@@ -1,10 +1,12 @@
 import HttpServer, { ResponseCreated, ResponseNoContent, ResponseOK } from "../http/HttpServer";
-import { CreateProductUseCase } from "@/application/usecase/CreateProduct";
-import { UpdateProductUseCase } from "@/application/usecase/UpdateProduct";
-import { DeleteProductUseCase } from "@/application/usecase/DeleteProduct";
-import { ProductRepository } from "@/application/repository/Product";
-import { EventPublisher } from "@/application/event/EventPublisher";
-import { ListProductsUseCase } from "@/application/usecase/ListProducts";
+import { 
+  CreateProductUseCase,
+  UpdateProductUseCase,
+  DeleteProductUseCase,
+  ListProductsUseCase,
+} from "@/application/usecase";
+import { ProductRepository } from "@/application/repository";
+import { EventPublisher } from "@/application/event";
 
 export class ProductController {
   static registerRoutes(

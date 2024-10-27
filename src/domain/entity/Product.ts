@@ -8,21 +8,14 @@ export enum ProductCategory {
 }
 
 export class Product {
-  constructor(
-    readonly id: string,
-    private name: string,
-    private description: string,
-    private price: number,
-    private readonly category: ProductCategory
-  ) {}
 
-  static create(name: string, description: string, price: number, category: string): Product {
+  public static create(name: string, description: string, price: number, category: string): Product {
     const id = Id.createString();
     const productCategory = this.validateCategory(category);
     return new Product(id, name, description, price, productCategory);
   }
 
-  static restore(id: string, name: string, description: string, price: number, category: string): Product {
+  public static restore(id: string, name: string, description: string, price: number, category: string): Product {
     const productCategory = this.validateCategory(category);
     return new Product(id, name, description, price, productCategory);
   }
@@ -36,8 +29,15 @@ export class Product {
       default: throw new Error("Invalid category");
     }
   }
+  constructor(
+    readonly id: string,
+    private name: string,
+    private description: string,
+    private price: number,
+    private readonly category: ProductCategory,
+  ) {}
 
-  update(name: string, description: string, price: number) {
+  public update(name: string, description: string, price: number) {
     if (name) {
       this.name = name;
     }
@@ -51,19 +51,19 @@ export class Product {
     }
   }
 
-  getName(): string {
+  public getName(): string {
     return this.name;
   }
 
-  getDescription(): string {
+  public getDescription(): string {
     return this.description;
   }
 
-  getPrice(): number {
+  public getPrice(): number {
     return this.price;
   }
 
-  getCategory(): string {
+  public getCategory(): string {
     return String(this.category);
   }
 }

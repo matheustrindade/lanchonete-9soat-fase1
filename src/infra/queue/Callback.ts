@@ -1,9 +1,8 @@
-import { CheckPaymentStatusUseCase } from "@/application/usecase/CheckPaymentStatus";
 import { EventConsumer } from "../event/Consumer";
-import { PreOrderRepository } from "@/application/repository/PreOrder";
-import { PaymentGateway } from "@/application/gateway/Payment";
-import { OrderRepository } from "@/application/repository/Order";
-import { EventPublisher } from "@/application/event/EventPublisher";
+import { EventPublisher } from "@/application/event";
+import { PaymentGateway } from "@/application/gateway";
+import { CheckPaymentStatusUseCase } from "@/application/usecase";
+import { PreOrderRepository, OrderRepository } from "@/application/repository";
 
 export class CallbackConsumer {
   static registerConsumers(

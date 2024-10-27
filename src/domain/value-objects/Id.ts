@@ -1,7 +1,7 @@
-import crypto from 'node:crypto'
+import crypto from "node:crypto";
 
 export class Id {
-  static createString() {
-    return crypto.randomUUID()
+  public static createString() {
+    return crypto.randomUUID();
   }
 }

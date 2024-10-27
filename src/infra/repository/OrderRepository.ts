@@ -1,6 +1,7 @@
-import { OrderRepository } from "@/application/repository/Order";
-import { Order } from "@/domain/entity/Order";
 import { Collection } from "mongodb";
+
+import { Order } from "@/domain/entity";
+import { OrderRepository } from "@/application/repository";
 
 export class OrderMongoRepository implements OrderRepository {
   constructor(private readonly collection: Collection) {}

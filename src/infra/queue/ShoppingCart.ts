@@ -1,5 +1,5 @@
 import { EventConsumer } from "../event/Consumer";
-import { ShoppingCartRepository } from "@/application/repository/ShoppingCart";
+import { ShoppingCartRepository } from "@/application/repository";
 
 export class ShoppingCartConsumer {
   static registerConsumers(

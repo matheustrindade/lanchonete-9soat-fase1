@@ -1,22 +1,26 @@
 import 'dotenv/config'
 
-import { MongoClient } from "mongodb";
 import amqp from "amqplib";
+import { MongoClient } from "mongodb";
 import MercadoPagoConfig, { Payment } from "mercadopago";
 
 import { ExpressHttpServer } from "@/infra/http/HttpServer";
-import { ProductController } from "@/infra/controller/Product";
 import { RabbitMqAdapter } from "@/infra/event/RabbitMqAdapter";
-import { ProductMongoRepository } from "@/infra/repository/ProductRepository";
-import { ShoppingCartController } from "@/infra/controller/ShoppingCart";
-import { ShoppingCartMongoRepository } from "@/infra/repository/ShoppingCartRepository";
-import { PreOrderMongoRepository } from "@/infra/repository/PreOrderRepository";
 import { MercadoPagoPaymentGateway } from "@/infra/gateway/MercadoPago";
 import { ShoppingCartQuery } from "@/infra/projection/ShoppingCart";
-import { CallbackController } from '@/infra/controller/Callback';
 import { CallbackConsumer } from '@/infra/queue/Callback';
-import { OrderMongoRepository } from '@/infra/repository/OrderRepository';
 import { ShoppingCartConsumer } from '@/infra/queue/ShoppingCart';
+import { 
+  ProductController, 
+  CallbackController,
+  ShoppingCartController,
+} from "@/infra/controller";
+import { 
+  ProductMongoRepository,
+  PreOrderMongoRepository,
+  ShoppingCartMongoRepository,
+  OrderMongoRepository,
+} from '@/infra/repository';
 
 async function start() {
   const config = {
@@ -30,10 +34,11 @@ async function start() {
     MongoClient.connect(config.mongoURL),
     amqp.connect(config.rabbitMqURL),
   ]);
-  const productCollection = mongoClient.db().collection("products");
-  const shoppingCartCollection = mongoClient.db().collection("shopping_carts");
-  const preOrderCollection = mongoClient.db().collection("pre_orders");
-  const orderCollection = mongoClient.db().collection("orders");
+  const mongoDatabase = mongoClient.db()
+  const productCollection = mongoDatabase.collection("products");
+  const shoppingCartCollection = mongoDatabase.collection("shopping_carts");
+  const preOrderCollection = mongoDatabase.collection("pre_orders");
+  const orderCollection = mongoDatabase.collection("orders");
 
   const productRepository = new ProductMongoRepository(productCollection);
   const shoppingCartRepository = new ShoppingCartMongoRepository(shoppingCartCollection);

@@ -1,11 +1,15 @@
 import HttpServer, { ResponseOK } from "../http/HttpServer";
-import { ProductRepository } from "@/application/repository/Product";
-import { EventPublisher } from "@/application/event/EventPublisher";
-import { ShoppingCartRepository } from "@/application/repository/ShoppingCart";
-import { AddProductToShoppingCartUseCase } from "@/application/usecase/AddProductToShoppingCart";
-import { CheckoutShoppingCartUseCase } from "@/application/usecase/CheckoutShoppingCart";
-import { PaymentGateway } from "@/application/gateway/Payment";
-import { PreOrderRepository } from "@/application/repository/PreOrder";
+import { 
+  ProductRepository,
+  PreOrderRepository,
+  ShoppingCartRepository,
+} from "@/application/repository";
+import { 
+  AddProductToShoppingCartUseCase,
+  CheckoutShoppingCartUseCase
+} from "@/application/usecase";
+import { PaymentGateway } from "@/application/gateway";
+import { EventPublisher } from "@/application/event";
 import { ShoppingCartQuery } from "../projection/ShoppingCart";
 
 export class ShoppingCartController {

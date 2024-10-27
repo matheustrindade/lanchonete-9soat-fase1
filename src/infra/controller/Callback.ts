@@ -1,5 +1,5 @@
-import { NewPaymentCallbackReceivedEvent } from "@/application/event/Callback";
-import { EventPublisher } from "@/application/event/EventPublisher";
+import { EventPublisher } from "@/application/event";
+import { NewPaymentCallbackReceivedEvent } from "@/application/event";
 import HttpServer, { ResponseNoContent } from "@/infra/http/HttpServer";
 
 export class CallbackController {

@@ -1,5 +1,5 @@
-import { ProductRepository } from "@/application/repository/Product";
-import { Product } from "@/domain/entity/Product";
+import { Product } from "@/domain/entity";
+import { ProductRepository } from "@/application/repository";
 
 export class ListProductsUseCase {
   constructor(private productRepository: ProductRepository) {}
@@ -17,11 +17,11 @@ export class ListProductsUseCase {
   }
 }
 
-export type Input = {
+type Input = {
   category: string;
 };
 
-export type Output = {
+type Output = {
   id: string;
   name: string;
   description: string;
