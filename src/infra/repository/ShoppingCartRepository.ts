@@ -15,7 +15,7 @@ export class ShoppingCartMongoRepository implements ShoppingCartRepository {
     return ShoppingCart.restore(shoppingCart.customerId, shoppingCart.totalPrice, shoppingCart.items);
   }
 
-  async delete(shoppingCart: ShoppingCart): Promise<void> {
-    await this.collection.deleteOne({ customerId: shoppingCart.customerId })
+  async deleteByCustomerId(customerId: string): Promise<void> {
+    await this.collection.deleteOne({ customerId })
   }
 }
