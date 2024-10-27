@@ -1,4 +1,4 @@
-import HttpServer from "../http/HttpServer";
+import HttpServer, { ResponseCreated, ResponseNoContent, ResponseOK } from "../http/HttpServer";
 import { CreateProductUseCase } from "@/application/usecase/CreateProduct";
 import { UpdateProductUseCase } from "@/application/usecase/UpdateProduct";
 import { DeleteProductUseCase } from "@/application/usecase/DeleteProduct";
@@ -18,7 +18,9 @@ export class ProductController {
     const deleteProductUseCase = new DeleteProductUseCase(productRepository, eventPublisher);
 
     httpServer.get("/products", (request) => {
-      return listProductsUseCase.execute({ category: request.params.category });
+      return listProductsUseCase.execute({ 
+        category: request.params.category
+      }).then(ResponseOK);
     });
 
     httpServer.post("/products", (request) => {
@@ -27,7 +29,7 @@ export class ProductController {
         description: request.body.description,
         price: request.body.price,
         category: request.body.category,
-      });
+      }).then(ResponseCreated);
     });
 
     httpServer.patch("/products/:id", (request) => {
@@ -36,11 +38,13 @@ export class ProductController {
         name: request.body.name,
         description: request.body.description,
         price: request.body.price,
-      });
+      }).then(ResponseOK);
     });
 
     httpServer.delete("/products/:id", (request) => {
-      return deleteProductUseCase.execute({ productId: request.params.id });
+      return deleteProductUseCase.execute({ 
+        productId: request.params.id
+      }).then(ResponseNoContent);
     });
   }
 }

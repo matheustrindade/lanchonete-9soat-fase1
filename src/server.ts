@@ -72,7 +72,7 @@ async function start() {
   )
   await ShoppingCartConsumer.registerConsumers(rabbitMqAdapter, shoppingCartRepository)
 
-  httpServer.get("/healthy", async () => ({ ok: true }));
+  httpServer.get("/healthy", async () => ({ status: 200, ok: true }));
   httpServer.listen(3000);
 }
 

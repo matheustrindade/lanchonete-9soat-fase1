@@ -4,10 +4,19 @@ import { getStatusCodeFromError } from "./ErrorHandler";
 import { serve, setup } from 'swagger-ui-express'
 import {readFileSync} from 'fs'
 
-type PostCallback = (request: { body: any, params: any }) => Promise<unknown>
-type PatchCallback = (request: { body: any, params: any }) => Promise<unknown>
-type GetCallback = (request: { params: any }) => Promise<unknown>
-type DeleteCallback = (request: { params: any }) => Promise<unknown>
+type HttpResponse = {
+	body?: unknown
+	status: 200 | 201 | 204
+}
+
+export const ResponseOK = (body: unknown): HttpResponse => ({ status: 200, body })
+export const ResponseCreated = (body: unknown): HttpResponse => ({ status: 201, body })
+export const ResponseNoContent = (): HttpResponse => ({ status: 204 })
+
+type PostCallback = (request: { body: any, params: any }) => Promise<HttpResponse>
+type PatchCallback = (request: { body: any, params: any }) => Promise<HttpResponse>
+type GetCallback = (request: { params: any }) => Promise<HttpResponse>
+type DeleteCallback = (request: { params: any }) => Promise<HttpResponse>
 
 export default interface HttpServer {
 	get(url: string, callback: GetCallback): void;
@@ -31,8 +40,8 @@ export class ExpressHttpServer implements HttpServer {
 	get(url: string, callback: GetCallback): void {
 		this.app.get(url, async function (req: Request, res: Response) {
 			try {
-				const output = await callback({ params: { ...req.params, ...req.query } });
-				res.json(output);
+				const { body, status } = await callback({ params: { ...req.params, ...req.query } });
+				res.status(status).json(body);
 			} catch (e: any) {
 				const status = getStatusCodeFromError(e)
 				res.status(status).json({ message: e.message });
@@ -43,8 +52,8 @@ export class ExpressHttpServer implements HttpServer {
 	post(url: string, callback: PostCallback): void {
 		this.app.post(url, async function (req: Request, res: Response) {
 			try {
-				const output = await callback({ body: req.body, params: req.params });
-				res.json(output);
+				const { body, status } = await callback({ body: req.body, params: req.params });
+				res.status(status).json(body);
 			} catch (e: any) {
 				const status = getStatusCodeFromError(e)
 				res.status(status).json({ message: e.message });
@@ -55,8 +64,8 @@ export class ExpressHttpServer implements HttpServer {
 	patch(url: string, callback: PatchCallback): void {
 		this.app.patch(url, async function (req: Request, res: Response) {
 			try {
-				const output = await callback({ body: req.body, params: req.params });
-				res.json(output);
+				const { body, status } = await callback({ body: req.body, params: req.params });
+				res.status(status).json(body);
 			} catch (e: any) {
 				const status = getStatusCodeFromError(e)
 				res.status(status).json({ message: e.message });
@@ -67,8 +76,8 @@ export class ExpressHttpServer implements HttpServer {
 	delete(url: string, callback: DeleteCallback): void {
 		this.app.patch(url, async function (req: Request, res: Response) {
 			try {
-				const output = await callback({ params: req.params });
-				res.json(output);
+				const { body, status } = await callback({ params: req.params });
+				res.status(status).json(body);
 			} catch (e: any) {
 				const status = getStatusCodeFromError(e)
 				res.status(status).json({ message: e.message });
