@@ -18,7 +18,7 @@ export class OrderMongoRepository implements OrderRepository {
     );
   }
 
-  async create(Order: Order): Promise<void> {
-    await this.collection.insertOne(Order);
+  async create(order: Order): Promise<void> {
+    await this.collection.insertOne(order);
   }
 }
