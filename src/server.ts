@@ -16,6 +16,7 @@ import { ShoppingCartQuery } from "@/infra/projection/ShoppingCart";
 import { CallbackController } from '@/infra/controller/Callback';
 import { CallbackConsumer } from '@/infra/queue/Callback';
 import { OrderMongoRepository } from '@/infra/repository/OrderRepository';
+import { ShoppingCartConsumer } from '@/infra/queue/ShoppingCart';
 
 async function start() {
   const config = {
@@ -69,8 +70,9 @@ async function start() {
     orderRepository,
     rabbitMqAdapter
   )
+  await ShoppingCartConsumer.registerConsumers(rabbitMqAdapter, shoppingCartRepository)
 
-  httpServer.get("/healthy", async () => ({ ok: true }));
+  httpServer.get("/healthy", async () => ({ status: 200, ok: true }));
   httpServer.listen(3000);
 }
 

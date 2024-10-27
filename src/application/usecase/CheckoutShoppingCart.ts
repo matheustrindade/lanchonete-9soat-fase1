@@ -27,7 +27,6 @@ export class CheckoutShoppingCartUseCase {
     })
     const preOrder = shoppingCart.checkout(payment)
     await this.preOrderRepository.create(preOrder)
-    await this.shoppingCartRepository.delete(shoppingCart)
     await this.eventPublisher.publish(NewPreOrderCreatedEvent(preOrder))
     return {
       preOrderId: preOrder.id,
