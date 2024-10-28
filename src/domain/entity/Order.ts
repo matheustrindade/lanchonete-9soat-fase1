@@ -15,12 +15,6 @@ enum OrderStatus {
 }
 
 export class Order {
-
-  public static create(customerId: string, items: OrderItem[], totalPrice: number, payment: PaymentTransaction) {
-    const id = Id.createString();
-    const createdAt = new Date();
-    return new Order(id, customerId, items, totalPrice, payment, OrderStatus.PREPARING, createdAt);
-  }
   constructor(
     readonly id: string,
     readonly customerId: string,
@@ -28,6 +22,36 @@ export class Order {
     readonly totalPrice: number,
     readonly payment: PaymentTransaction,
     private status: OrderStatus,
-    readonly createdAt: Date,
+    readonly createdAt: Date
   ) {}
+
+  public static create(customerId: string, items: OrderItem[], totalPrice: number, payment: PaymentTransaction) {
+    const id = Id.createString();
+    const createdAt = new Date();
+    return new Order(id, customerId, items, totalPrice, payment, OrderStatus.PREPARING, createdAt);
+  }
+
+  public static restore(
+    id: string, 
+    customerId: string, 
+    items: OrderItem[], 
+    totalPrice: number, 
+    status: OrderStatus, 
+    payment: PaymentTransaction, 
+    createdAt: Date
+  ) {
+    return new Order(id, customerId, items, totalPrice, payment, status, createdAt);
+  }
+
+  completePreparation() {
+    switch (this.status) {
+      case OrderStatus.FINISHED:
+        throw new Error("Order already finished");
+      case OrderStatus.READY:
+        throw new Error("Order already ready");
+      case OrderStatus.PREPARING:
+        this.status = OrderStatus.READY;
+        break
+    }
+  }
 }

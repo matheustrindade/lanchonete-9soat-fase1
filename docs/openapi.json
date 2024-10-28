@@ -21,6 +21,10 @@
     {
       "name": "Shopping Cart",
       "description": "Operations for Shopping Cart"
+    },
+    {
+      "name": "Orders",
+      "description": "Operations for Orders"
     }
   ],
   "paths": {
@@ -265,6 +269,40 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/{id}/ready": {
+      "patch": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Complete order preparation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Order Id"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Order completed successfully"
           },
           "500": {
             "description": "Internal error",

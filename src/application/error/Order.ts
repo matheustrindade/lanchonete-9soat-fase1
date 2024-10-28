@@ -1,0 +1,1 @@
+export const OrderNotFoundError = new Error("Order not found");
