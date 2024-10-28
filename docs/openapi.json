@@ -426,7 +426,17 @@
           "createdAt": {
             "type": "string",
             "example": "2024-10-21T22:35:24.363Z",
-            "description": "Data de criação do pedido"
+            "description": "Data e hora de criação do pedido"
+          },
+          "completedAt": {
+            "type": "string",
+            "example": "2024-10-21T22:35:24.363Z",
+            "description": "Data e hora que o pedido foi completado"
+          },
+          "finishedAt": {
+            "type": "string",
+            "example": "2024-10-21T22:35:24.363Z",
+            "description": "Data e hora da finalização do pedido"
           },
           "status": {
             "$ref": "#/components/schemas/OrderStatus"

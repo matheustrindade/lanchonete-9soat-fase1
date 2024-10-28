@@ -31,6 +31,8 @@ export class OrderQuery {
             totalPrice: 1,
             createdAt: 1,
             status: 1,
+            completedAt: 1,
+            finishedAt: 1,
             items: {
               productId: "$items.productId",
               productName: "$product.name",
@@ -51,6 +53,8 @@ export class OrderQuery {
             totalPrice: { $first: "$totalPrice" },
             status: { $first: "$status" },
             createdAt: { $first: "$createdAt" },
+            completedAt: { $first: "$completedAt" },
+            finishedAt: { $first: "$finishedAt" },
             items: { $push: "$items" },
           },
         },
@@ -63,6 +67,8 @@ export class OrderQuery {
             status: 1,
             createdAt: 1,
             items: 1,
+            completedAt: 1,
+            finishedAt: 1,
           },
         },
       ])

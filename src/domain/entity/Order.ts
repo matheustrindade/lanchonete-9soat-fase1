@@ -15,6 +15,7 @@ enum OrderStatus {
 }
 
 export class Order {
+
   constructor(
     readonly id: string,
     readonly customerId: string,
@@ -22,7 +23,9 @@ export class Order {
     readonly totalPrice: number,
     readonly payment: PaymentTransaction,
     private status: OrderStatus,
-    readonly createdAt: Date
+    readonly createdAt: Date,
+    private completedAt?: Date,
+    private finishedAt?: Date,
   ) {}
 
   public static create(customerId: string, items: OrderItem[], totalPrice: number, payment: PaymentTransaction) {
@@ -38,9 +41,11 @@ export class Order {
     totalPrice: number, 
     status: OrderStatus, 
     payment: PaymentTransaction, 
-    createdAt: Date
+    createdAt: Date,
+    completedAt?: Date,
+    finishedAt?: Date,
   ) {
-    return new Order(id, customerId, items, totalPrice, payment, status, createdAt);
+    return new Order(id, customerId, items, totalPrice, payment, status, createdAt, completedAt, finishedAt);
   }
 
   completePreparation() {
@@ -51,6 +56,7 @@ export class Order {
         throw new Error("Order already ready");
       case OrderStatus.PREPARING:
         this.status = OrderStatus.READY;
+        this.completedAt = new Date()
         break
     }
   }
@@ -63,6 +69,7 @@ export class Order {
           throw new Error("Order preparing can not be finished");
       case OrderStatus.READY:
         this.status = OrderStatus.FINISHED
+        this.finishedAt = new Date()
         break
     }
   }

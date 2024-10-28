@@ -24,6 +24,8 @@ export class OrderMongoRepository implements OrderRepository {
       order.status,
       order.payment,
       order.createdAt,
+      order.completedAt,
+      order.finishedAt,
     );
   }
 
