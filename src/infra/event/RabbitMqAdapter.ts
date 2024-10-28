@@ -10,22 +10,33 @@ export class RabbitMqAdapter implements EventPublisher, EventConsumer {
     const queues = [
       {
         name: "CHECK_PAYMENT_STATUS",
-        binding: { routingKey: "PAYMENT_CALLBACK_RECEIVED" },
+        bindings: [{ routingKey: "PAYMENT_CALLBACK_RECEIVED" }],
       },
       {
         name: "DELETE_SHOPPING_CART",
-        binding: { routingKey: "PRE_ORDER_CREATED" },
+        bindings: [{ routingKey: "PRE_ORDER_CREATED" }],
+      },
+      {
+        name: "NOTIFY_CUSTOMER",
+        bindings: [
+          { routingKey: "ORDER_READY" },
+          { routingKey: "ORDER_FINISHED" },
+        ],
       },
     ];
     this.connection.createChannel().then(async (channel) => {
       await Promise.all(
         queues.map(async (queue) => {
           await channel.assertQueue(queue.name);
-          return channel.bindQueue(
-            queue.name,
-            exchange,
-            queue.binding.routingKey
-          );
+          return Promise.all(
+            queue.bindings.map(binding => {
+              return channel.bindQueue(
+                queue.name,
+                exchange,
+                binding.routingKey
+              );
+            })
+          )
         })
       );
       return channel.close();
