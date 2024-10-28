@@ -22,6 +22,7 @@ import {
   OrderMongoRepository,
 } from '@/infra/repository';
 import { OrderController } from './infra/controller/Order';
+import { OrderQuery } from './infra/projection/Order';
 
 async function start() {
   const config = {
@@ -69,7 +70,8 @@ async function start() {
     shoppingCartQuery
   );
   CallbackController.registerRoutes(httpServer, rabbitMqAdapter)
-  OrderController.registerRoutes(httpServer, orderRepository, rabbitMqAdapter)
+  const orderQuery = new OrderQuery(orderCollection)
+  OrderController.registerRoutes(httpServer, orderRepository, rabbitMqAdapter, orderQuery)
   await CallbackConsumer.registerConsumers(
     rabbitMqAdapter,
     preOrderRepository,
