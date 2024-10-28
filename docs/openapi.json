@@ -316,6 +316,40 @@
           }
         }
       }
+    },
+    "/orders/{id}/finish": {
+      "patch": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Finish order",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Order Id"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Order finished successfully"
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {

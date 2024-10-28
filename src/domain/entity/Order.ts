@@ -54,4 +54,16 @@ export class Order {
         break
     }
   }
+
+  finish() {
+    switch (this.status) {
+      case OrderStatus.FINISHED:
+        throw new Error("Order already finished");
+        case OrderStatus.PREPARING:
+          throw new Error("Order preparing can not be finished");
+      case OrderStatus.READY:
+        this.status = OrderStatus.FINISHED
+        break
+    }
+  }
 }
