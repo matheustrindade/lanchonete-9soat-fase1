@@ -10,6 +10,9 @@ export class Customer {
 
     static create(personalCode: string, name: string, email?: string) {
         const id = Id.createString();
+        if (!personalCode || !name) {
+            throw new Error('Missing required attributes. Required: name, personalCode (cpf)')
+        }
         return new Customer(id, personalCode, name, email);
     } 
 

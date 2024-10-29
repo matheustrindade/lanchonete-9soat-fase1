@@ -25,6 +25,7 @@ import { OrderController } from './infra/controller/Order';
 import { OrderQuery } from './infra/projection/Order';
 import { CustomerController } from './infra/controller/Customer';
 import { CustomerMongoRepository } from './infra/repository/CustomerRepository';
+import { CustomerQuery } from './infra/projection/Customer';
 
 async function start() {
   const config = {
@@ -85,7 +86,8 @@ async function start() {
   )
   await ShoppingCartConsumer.registerConsumers(rabbitMqAdapter, shoppingCartRepository)
 
-  CustomerController.registerRoutes(httpServer,customerRepository, rabbitMqAdapter);  
+  const customerQuery = new CustomerQuery(customerCollection)
+  CustomerController.registerRoutes(httpServer, customerRepository, customerQuery);  
 
   httpServer.get("/healthy", async () => ({ status: 200, ok: true }));
   httpServer.listen(3000);
