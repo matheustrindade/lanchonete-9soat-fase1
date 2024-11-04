@@ -2,6 +2,10 @@
 
 Este é um projeto desenvolvido como parte da pós-graduação POSTECH na FIAP. O objetivo deste projeto é construir uma API para gerenciar uma lanchonete, com operações de CRUD de produtos, adição ao carrinho de compras, checkout utilizando Mercado Pago para gerar QR Codes e lidar com pedidos via RabbitMQ.
 
+Repositório é acessível através do seguinte [link](https://github.com/matheustrindade/lanchonete-9soat-fase1).
+
+Como parte da documentação do projeto, o **Event Storming** pode ser encontrado clicando [aqui](https://miro.com/welcomeonboard/TjBPbFk2Vm55M0J0MG1PTFNwVDY3SlRDbXcyekFJbWJ3VU9TdjZGVVNJMk9obE5lbk5HN2dHclptZkVIS2ZIYnwzNDU4NzY0NjAwNTc0OTY5MTY1fDI=?share_link_id=865524717032).
+
 ## Funcionalidades
 
 O projeto implementa diversas funcionalidades, como:
@@ -126,3 +130,17 @@ Antes de realizar o checkout de um pedido, é necessário gerar um token de aute
 ## Considerações Finais
 
 Este projeto foi desenvolvido como parte do curso de pós-graduação da FIAP na disciplina de Arquitetura de Software. Ele foi projetado para uma aplicação de uma lanchonete, mas a estrutura é facilmente adaptável para outros domínios que envolvem sistemas de pedidos, pagamentos e comunicação com sistemas externos.
+
+## Grupo
+
+Eder Ferreira de Matos
+[ederfmatos@gmail.com](ederfmatos@gmail.com)
+
+Matheus Henrique da Silva Mendes
+[matheushenriquesad@gmail.com](ederfmatos@gmail.com)
+
+ANDERSON MARTINIANO DA SILVA
+[and.martiniano@gmail.com](and.martiniano@gmail.com)
+
+Matheus Trindade dos Santos
+[maatheus.trindade.santos@gmail.com](maatheus.trindade.santos@gmail.com)
