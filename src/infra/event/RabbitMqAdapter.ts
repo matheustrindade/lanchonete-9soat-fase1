@@ -1,5 +1,4 @@
 import { Connection } from "amqplib";
-
 import { Event, EventPublisher } from "@/application/event";
 import { EventConsumer } from "./Consumer";
 
@@ -24,23 +23,29 @@ export class RabbitMqAdapter implements EventPublisher, EventConsumer {
         ],
       },
     ];
-    this.connection.createChannel().then(async (channel) => {
-      await Promise.all(
-        queues.map(async (queue) => {
-          await channel.assertQueue(queue.name);
-          return Promise.all(
-            queue.bindings.map(binding => {
-              return channel.bindQueue(
-                queue.name,
-                exchange,
-                binding.routingKey
-              );
-            })
-          )
-        })
-      );
-      return channel.close();
-    });
+
+    // Canal de inicialização das filas
+    this.initializeQueues(queues);
+  }
+
+  private async initializeQueues(queues: Array<{ name: string; bindings: { routingKey: string }[] }>) {
+    const channel = await this.connection.createChannel();
+    await channel.assertExchange(exchange, "direct", { durable: true });
+    await Promise.all(
+      queues.map(async (queue) => {
+        await channel.assertQueue(queue.name, { durable: true });
+        return Promise.all(
+          queue.bindings.map(binding => {
+            return channel.bindQueue(
+              queue.name,
+              exchange,
+              binding.routingKey
+            );
+          })
+        );
+      })
+    );
+    // Não fechamos o canal após configuração das filas
   }
 
   async consume(
@@ -48,15 +53,20 @@ export class RabbitMqAdapter implements EventPublisher, EventConsumer {
     callback: (event: Event) => Promise<void>
   ): Promise<void> {
     const channel = await this.connection.createChannel();
-    channel.consume(queue, async function (message: any) {
-      const input = JSON.parse(message.content.toString());
-      await callback(input);
-      channel.ack(message);
+    await channel.assertQueue(queue, { durable: true }); // Confirma a existência da fila
+    channel.consume(queue, async (message: any) => {
+      if (message !== null) {
+        const input = JSON.parse(message.content.toString());
+        await callback(input);
+        channel.ack(message);
+      }
     });
   }
 
   async publish(event: Event): Promise<void> {
     const channel = await this.connection.createChannel();
+    await channel.assertExchange(exchange, "direct", { durable: true });
     channel.publish(exchange, event.name, Buffer.from(JSON.stringify(event)));
+    channel.close(); // Fechar após publicar o evento
   }
 }

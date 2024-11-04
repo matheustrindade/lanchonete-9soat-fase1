@@ -6,8 +6,8 @@ export class ShoppingCartConsumer {
     consumer: EventConsumer,
     shoppingCartRepository: ShoppingCartRepository,
   ) {
-    consumer.consume('DELETE_SHOPPING_CART', event => {
-      return shoppingCartRepository.deleteByCustomerId(event.customerId)
-    })
+    consumer.consume('DELETE_SHOPPING_CART', async event => {
+      return await shoppingCartRepository.deleteByCustomerId(event.customerId);
+    });
   }
 }

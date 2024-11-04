@@ -7,8 +7,9 @@ import { getStatusCodeFromError } from "./ErrorHandler";
 
 interface HttpResponse {
 	body?: unknown;
-	status: 200 | 201 | 204;
-}
+	status: 200 | 201 | 204 | 404 | 500;
+  }
+  
 
 export const ResponseOK = (body: unknown): HttpResponse => ({ status: 200, body });
 export const ResponseCreated = (body: unknown): HttpResponse => ({ status: 201, body });

@@ -3,15 +3,12 @@ import { Collection } from "mongodb";
 export class OrderQuery {
   constructor(private readonly collection: Collection) {}
 
+  // Método para buscar um pedido específico por ID
   async findById(id: string) {
     return this.collection
       .aggregate([
-        {
-          $match: { id }
-        },
-        {
-          $unwind: "$items",
-        },
+        { $match: { id } },
+        { $unwind: "$items" },
         {
           $lookup: {
             from: "products",
@@ -20,9 +17,7 @@ export class OrderQuery {
             as: "product",
           },
         },
-        {
-          $unwind: "$product",
-        },
+        { $unwind: "$product" },
         {
           $project: {
             _id: 0,
@@ -73,6 +68,73 @@ export class OrderQuery {
         },
       ])
       .toArray()
-      .then((response) => (response[0]));
+      .then((response) => response[0]);
+  }
+
+  // Método para buscar pedidos pelo ID do cliente
+  async findByCustomerId(customerId: string) {
+    return this.collection
+      .aggregate([
+        { $match: { customerId } },
+        { $unwind: "$items" },
+        {
+          $lookup: {
+            from: "products",
+            localField: "items.productId",
+            foreignField: "id",
+            as: "product",
+          },
+        },
+        { $unwind: "$product" },
+        {
+          $project: {
+            _id: 0,
+            id: 1,
+            customerId: 1,
+            totalPrice: 1,
+            createdAt: 1,
+            status: 1,
+            completedAt: 1,
+            finishedAt: 1,
+            items: {
+              productId: "$items.productId",
+              productName: "$product.name",
+              productPrice: "$items.price",
+              productDescription: "$product.description",
+              observation: "$items.observation",
+              productCategory: "$product.category",
+              quantity: "$items.quantity",
+              totalPrice: "$totalPrice",
+            },
+          },
+        },
+        {
+          $group: {
+            _id: "$id",
+            id: { $first: "$id" },
+            customerId: { $first: "$customerId" },
+            totalPrice: { $first: "$totalPrice" },
+            status: { $first: "$status" },
+            createdAt: { $first: "$createdAt" },
+            completedAt: { $first: "$completedAt" },
+            finishedAt: { $first: "$finishedAt" },
+            items: { $push: "$items" },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            id: 1,
+            customerId: 1,
+            totalPrice: 1,
+            status: 1,
+            createdAt: 1,
+            items: 1,
+            completedAt: 1,
+            finishedAt: 1,
+          },
+        },
+      ])
+      .toArray();
   }
 }

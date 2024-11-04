@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   rabbitmq:
     container_name: rabbitmq
@@ -6,6 +8,11 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   mongo:
     container_name: mongo
@@ -13,3 +20,31 @@ services:
     restart: always
     ports:
       - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - mongo_data:/data/db
+
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+    environment:
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+      - MONGO_URL=mongodb://mongo:27017/fastfooddb
+      - MERCADO_PAGO_TOKEN=${MERCADO_PAGO_TOKEN}
+      - CALLBACK_URL=${CALLBACK_URL}
+    volumes:
+      - .:/app
+    restart: always
+
+volumes:
+  mongo_data:

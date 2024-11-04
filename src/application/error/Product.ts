@@ -1,1 +1,7 @@
-export const ProductNotFoundError = new Error("Product not found");
+export class ProductNotFoundError extends Error {
+    constructor() {
+      super("Product not found");
+      this.name = "ProductNotFoundError";
+    }
+  }
+  
