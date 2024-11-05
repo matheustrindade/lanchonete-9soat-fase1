@@ -7,6 +7,28 @@ services:
       - "5672:5672"
       - "15672:15672"
 
+  init_rabbitmq:
+    image: "alpine:3.12"
+    links:
+      - rabbitmq
+    depends_on:
+      - rabbitmq
+    command: >
+      sh -c "
+        until nc -z rabbitmq 5672; do
+          echo 'Esperando RabbitMQ...';
+          sleep 2;
+        done;
+        apk add curl
+        curl -u guest:guest -X PUT -d '{\"durable\": true}' 'http://rabbitmq:15672/api/queues/%2F/CHECK_PAYMENT_STATUS';
+        curl -u guest:guest -X PUT -d '{\"durable\": true}' 'http://rabbitmq:15672/api/queues/%2F/DELETE_SHOPPING_CART';
+        curl -u guest:guest -X PUT -d '{\"durable\": true}' 'http://rabbitmq:15672/api/queues/%2F/NOTIFY_CUSTOMER';
+        curl -u guest:guest -X POST -d '{"routing_key":"PAYMENT_CALLBACK_RECEIVED", "exchange":"amq.direct"}' 'http://rabbitmq:15672/api/bindings/%2F/e/amq.direct/q/CHECK_PAYMENT_STATUS';
+        curl -u guest:guest -X POST -d '{"routing_key":"PRE_ORDER_CREATED", "exchange":"amq.direct"}' 'http://rabbitmq:15672/api/bindings/%2F/e/amq.direct/q/DELETE_SHOPPING_CART';
+        curl -u guest:guest -X POST -d '{"routing_key":"ORDER_READY", "exchange":"amq.direct"}' 'http://rabbitmq:15672/api/bindings/%2F/e/amq.direct/q/NOTIFY_CUSTOMER';
+        curl -u guest:guest -X POST -d '{"routing_key":"ORDER_FINISHED", "exchange":"amq.direct"}' 'http://rabbitmq:15672/api/bindings/%2F/e/amq.direct/q/NOTIFY_CUSTOMER';
+      "
+
   mongo:
     container_name: mongo
     image: mongo:7.0.3
