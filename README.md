@@ -55,48 +55,19 @@ MERCADO_PAGO_TOKEN=seu_token_aqui
 
 Para rodar o projeto em modo de desenvolvimento:
 
-1. Instale as dependências:
+1. Execute o comando:
 
 ```bash
-npm install
+docker-compose up -d
 ```
 
-2. Execute o projeto em modo de desenvolvimento:
-
-```bash
-npm run start
-```
-
-3. Para gerar a build de produção e rodar o projeto:
-
-```bash
-npm run build
-npm start
-```
-
-### Utilizando Docker
-
-O projeto possui um Dockerfile e um Docker Compose configurado. Para executar o projeto com Docker:
-
-1. Para construir a imagem:
-
-```bash
-docker build .
-```
-
-2. Para subir o MongoDB e RabbitMQ junto com a aplicação:
-
-```bash
-docker-compose up
-```
-
-Isso iniciará a aplicação junto com as dependências do MongoDB e RabbitMQ.
+A aplicação estará acessível na porta 3000.
 
 ## Documentação da API
 
 A documentação completa da API está disponível no formato OpenAPI.
 
-- A especificação OpenAPI encontra-se no arquivo `docs/openapi.json`.
+- A especificação OpenAPI encontra-se no arquivo `docs/openapi.json`. Com a aplicação rodando, acesse http://localhost:3000/swagger.
 - Além disso, na pasta `docs/collection`, existem arquivos para o projeto [Bruno](https://docs.usebruno.com/), uma alternativa ao Postman, onde você pode importar e testar as rotas da aplicação.
 
 ## Geração de Token do Mercado Pago
